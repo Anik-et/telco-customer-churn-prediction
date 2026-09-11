@@ -1,0 +1,80 @@
+project:
+  name: Customer Churn Prediction
+
+data:
+  raw_data_path: "data/raw/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+
+validation:
+  required_columns:
+    - customerID
+    - gender
+    - SeniorCitizen
+    - Partner
+    - Dependents
+    - tenure
+    - PhoneService
+    - MultipleLines
+    - InternetService
+    - OnlineSecurity
+    - OnlineBackup
+    - DeviceProtection
+    - TechSupport
+    - StreamingTV
+    - StreamingMovies
+    - Contract
+    - PaperlessBilling
+    - PaymentMethod
+    - MonthlyCharges
+    - TotalCharges
+    - Churn
+
+  expected_dtypes:
+    tenure: int64
+    MonthlyCharges: float64
+    TotalCharges: float64
+
+dataset:
+  target_column: Churn
+
+
+
+model:
+  random_state: 42
+  test_size: 0.2
+
+
+models:
+
+  logistic_regression:
+    max_iter: 1000
+
+  random_forest:
+    n_estimators: 100
+    max_depth: 8
+    max_features: log2
+    min_samples_split: 10
+    min_samples_leaf: 2
+    bootstrap: true
+
+  xgboost:
+    n_estimators: 800
+    max_depth: 3
+    learning_rate: 0.01
+    subsample: 0.7
+    min_child_weight: 5
+    colsample_bytree: 0.8
+
+artifacts:
+  directory: "artifacts"
+  best_model: "artifacts/best_model.pkl"
+  preprocessor: "artifacts/preprocessor.pkl"
+  feature_names: "artifacts/feature_names.pkl"
+
+
+shap:
+  output_path: "artifacts/shap_summary.png"
+
+prediction:
+  high_risk_threshold: 0.70
+  medium_risk_threshold: 0.40
+

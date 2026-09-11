@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data
+data/raw/
+data/processed/
+
+# Model artifacts
+artifacts/*.pkl
+artifacts/*.joblib
+
+# Generated visualizations
+artifacts/*.png
+
+# Environment / secrets
+.env
+*.env
+kaggle.json
+
+# OS
+.DS_Store
+Thumbs.db
