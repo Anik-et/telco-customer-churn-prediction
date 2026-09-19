@@ -1,43 +1,41 @@
 import pandas as pd
+from unittest.mock import Mock, patch
 
 from src.pipeline.predict_pipeline import PredictPipeline
 
 
-def test_prediction_pipeline():
+@patch("src.pipeline.predict_pipeline.joblib.load")
+def test_prediction_pipeline(mock_load):
+    """Test prediction pipeline without requiring saved model artifacts."""
 
-    pipeline = PredictPipeline()
+    # Mock the trained model.
+    mock_model = Mock()
+    mock_model.predict.return_value = [1]
+    mock_model.predict_proba.return_value = [[0.2, 0.8]]
 
-    sample_customer = pd.DataFrame([
+    # Mock the fitted preprocessor.
+    mock_preprocessor = Mock()
+    mock_preprocessor.transform.return_value = [[0.0]]
+
+    # PredictPipeline loads model first, then preprocessor.
+    mock_load.side_effect = [
+        mock_model,
+        mock_preprocessor
+    ]
+
+    # Create sample customer data.
+    input_data = pd.DataFrame(
         {
-            "customerID": "TEST001",
-            "gender": "Female",
-            "SeniorCitizen": 0,
-            "Partner": "Yes",
-            "Dependents": "No",
-            "tenure": 5,
-            "PhoneService": "Yes",
-            "MultipleLines": "No",
-            "InternetService": "Fiber optic",
-            "OnlineSecurity": "No",
-            "OnlineBackup": "No",
-            "DeviceProtection": "No",
-            "TechSupport": "No",
-            "StreamingTV": "Yes",
-            "StreamingMovies": "Yes",
-            "Contract": "Month-to-month",
-            "PaperlessBilling": "Yes",
-            "PaymentMethod": "Electronic check",
-            "MonthlyCharges": 85.0,
-            "TotalCharges": 425.0
+            "customerID": ["C001"],
+            "TotalCharges": ["425"],
         }
-    ])
+    )
 
-    result = pipeline.predict(sample_customer)
+    # Run pipeline.
+    pipeline = PredictPipeline()
+    result = pipeline.predict(input_data)
 
-    assert "churn_prediction" in result
-    assert "churn_probability" in result
-    assert "risk_level" in result
-
-    assert result["churn_prediction"] in ["Yes", "No"]
-    assert 0 <= result["churn_probability"] <= 1
-    assert result["risk_level"] in ["Low", "Medium", "High"]
+    # Validate prediction result.
+    assert result["churn_prediction"] == "Yes"
+    assert result["churn_probability"] == 0.8
+    assert result["risk_level"] == "High"
