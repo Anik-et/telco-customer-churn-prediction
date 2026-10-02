@@ -6,7 +6,7 @@ An end-to-end machine learning project that predicts telecom customer churn prob
 
 ## 🚀 Live Demo
 
-**Streamlit App:** `https://data-science-lab-tikxuebprgc6bxhvbqjcmk.streamlit.app/`
+**Streamlit App:** [telco-customer-churn-prediction](https://telco-customers-churnprediction.streamlit.app/)
 
 The application provides an interactive interface where a user can enter customer, service, contract, and billing information and receive:
 
